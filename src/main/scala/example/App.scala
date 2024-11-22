@@ -7,39 +7,59 @@ import org.apache.spark.{SparkConf, SparkContext}
 // import org.apache.spark.sql.functions._
 // import org.apache.spark.sql.{DataFrame, SparkSession}
 
-case class LoanApplicant (id : Double, loanType: Double, gender: Double, ownCar: Double, ownRealty: Double, income: Double, credit: Double, annuity: Double,
- age: Double, employment: Double, registration: Double, education: Double, familyStatus: Double,
- houseType: Double, numChildren: Double, relativePopulation: Double)
+case class LoanApplicant (
+    id : Double, 
+    target : Double, 
+    loanType: Double, 
+    gender: Double, 
+    ownCar: Double, 
+    ownRealty: Double, 
+    numChildren: Double, 
+    income: Double, 
+    credit: Double, 
+    annuity: Double,
+    education: Double,
+    familyStatus: Double,
+    houseType: Double, 
+    relativePopulation: Double,
+    age: Double, 
+    employment: Double, 
+    registration: Double
+)
 
 object App {
   def main(args: Array[String]): Unit = {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
 
-    val conf = new SparkConf().setAppName("project")
+    val conf = new SparkConf().setAppName("project").setMaster("local[*]")
     val sc = new SparkContext(conf)
 
-    val data = sc.textFile("/user/isathaye/input/application.csv").persist()
+    // val data = sc.textFile("/user/isathaye/input/application.csv").persist()
+    val data = sc.textFile("./src/application.csv").persist()
 
-    val processData = data.flatMap { line =>
+    val header = data.first()
+    val rows = data.filter(_ != header)
+
+    val processData = rows.flatMap { line =>
     val fields = line.split(",")
     fields match {
       case Array(
-            id, loanType, gender, ownCar, ownRealty, income, credit, annuity, age, employment,
-            registration, education, familyStatus, houseType, numChildren, relativePopulation
+            id, target, loanType, gender, ownCar, ownRealty, numChildren, income, 
+            credit, annuity,  education, familyStatus, houseType, relativePopulation,
+            age, employment, registration
           ) =>
         Some(LoanApplicant(
             id.toDouble, 
-          loanType.toDouble,
+            target.toDouble,
+          if (loanType == "Cash loans") 1.0 else 0.0,
           if (gender == "F") 1.0 else 0.0,
-          ownCar.toDouble,
-          ownRealty.toDouble,
+          if (ownCar == "Y") 1.0 else 0.0,
+          if (ownRealty == "Y") 1.0 else 0.0,
+          numChildren.toDouble,
           income.toDouble,
           credit.toDouble,
           annuity.toDouble,
-          age.toDouble,
-          employment.toDouble,
-          registration.toDouble,
           education match {
               case "Secondary / secondary special" => 1.0
               case "Higher education" => 2.0
@@ -66,8 +86,10 @@ object App {
             case "Co-op apartment" => 6.0
             case _ => 0.0
           },
-          numChildren.toDouble,
-          relativePopulation.toDouble
+          relativePopulation.toDouble,
+          age.toDouble,
+          employment.toDouble,
+          registration.toDouble
         ))
       case _ => None
     }
@@ -76,7 +98,8 @@ object App {
 
 
     val clean_data = processData.map(h => h.productIterator.mkString(", "))
-    clean_data.saveAsTextFile("/user/isathaye/output")
+    // clean_data.saveAsTextFile("/user/isathaye/output")
+    clean_data.saveAsTextFile("./src/output")
 
 
     // val bmi = processData.map(_.bmi).collect()
