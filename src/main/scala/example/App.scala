@@ -19,17 +19,12 @@ case class LoanApplicant (
   AMT_CREDIT: Double,
   AMT_ANNUITY: Double,
   AMT_GOODS_PRICE: Double,
-  NAME_INCOME_TYPE: Double,
-  NAME_EDUCATION_TYPE: Double,
-  NAME_FAMILY_STATUS: Double,
-  NAME_HOUSING_TYPE: Double,
   REGION_POPULATION_RELATIVE: Double,
   FLAG_EMP_PHONE: Double,
   FLAG_WORK_PHONE: Double,
   FLAG_CONT_MOBILE: Double,
   FLAG_PHONE: Double,
   FLAG_EMAIL: Double,
-  OCCUPATION_TYPE: Double,
   CNT_FAM_MEMBERS: Double,
   REGION_RATING_CLIENT: Double,
   REGION_RATING_CLIENT_W_CITY: Double,
@@ -77,8 +72,14 @@ case class LoanApplicant (
   AGE: Double,
   YEARS_EMPLOYED: Double,
   YEARS_REGISTERED: Double,
-  YEARS_ID_PUBLISH: Double
+  YEARS_ID_PUBLISH: Double,
+  educationOneHot: Array[Double],
+  familyStatusOneHot: Array[Double],
+  housingTypeOneHot: Array[Double],
+  incomeTypeOneHot: Array[Double],
+  occupationTypeOneHot: Array[Double]
 )
+
 
 object App {
   def main(args: Array[String]): Unit = {
@@ -187,7 +188,6 @@ object App {
         FLAG_CONT_MOBILE.toDouble,
         FLAG_PHONE.toDouble,
         FLAG_EMAIL.toDouble,
-        OCCUPATION_TYPE,
         CNT_FAM_MEMBERS.toDouble,
         REGION_RATING_CLIENT.toDouble,
         REGION_RATING_CLIENT_W_CITY.toDouble,
@@ -239,10 +239,10 @@ object App {
       ) ++ educationOneHot ++ familyStatusOneHot ++ housingTypeOneHot ++ incomeTypeOneHot ++ occupationTypeOneHot)
     case _ => None
   }
-}
-
+}  
 
     val clean_data = processData.map(h => h.productIterator.mkString(", "))
+    println(clean_data)
     // clean_data.saveAsTextFile("/user/isathaye/output")
     clean_data.saveAsTextFile("./src/output")
 
