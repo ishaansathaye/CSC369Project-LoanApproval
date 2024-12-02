@@ -32,9 +32,26 @@ object LogisticRegression {
 
     // Assemble the features to be used by the logistic regression model
     val assembler = new VectorAssembler()
-      .setInputCols(Array("loanType", "gender", "ownCar", "ownRealty",
-      "numChildren", "income", "credit", "annuity", "education", "familyStatus", "houseType", 
-      "relativePopulation", "age", "employment", "registration"))
+      .setInputCols(Array("loanType",
+        "ownCar",
+        "ownRealty",
+        "income",
+        "credit",
+        "annuity",
+        "goodsPrice",
+        "population",
+        "famMembers",
+        "regionRating",
+        "source2",
+        "source3",
+        "yearsExpl",
+        "obs60",
+        "def60",
+        "creditCheckYear",
+        "age",
+        "yearsEmployed",
+        "yearsReg",
+        "yearsPub"))
       .setOutputCol("features")
 
     // Scale the features
