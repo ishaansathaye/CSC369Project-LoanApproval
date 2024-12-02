@@ -32,26 +32,26 @@ object LogisticRegression {
 
     // Assemble the features to be used by the logistic regression model
     val assembler = new VectorAssembler()
-      .setInputCols(Array("loanType",
-        "ownCar",
-        "ownRealty",
-        "income",
-        "credit",
-        "annuity",
-        "goodsPrice",
-        "population",
-        "famMembers",
-        "regionRating",
-        "source2",
-        "source3",
-        "yearsExpl",
-        "obs60",
-        "def60",
-        "creditCheckYear",
-        "age",
-        "yearsEmployed",
-        "yearsReg",
-        "yearsPub"))
+      .setInputCols(Array("NAME_CONTRACT_TYPE",
+        "FLAG_OWN_CAR",
+        "FLAG_OWN_REALTY",
+        "AMT_INCOME_TOTAL",
+        "AMT_CREDIT",
+        "AMT_ANNUITY",
+        "AMT_GOODS_PRICE",
+        "REGION_POPULATION_RELATIVE",
+        "CNT_FAM_MEMBERS",
+        "REGION_RATING_CLIENT",
+        "EXT_SOURCE_2",
+        "EXT_SOURCE_3",
+        "YEARS_BEGINEXPLUATATION_AVG",
+        "OBS_60_CNT_SOCIAL_CIRCLE",
+        "DEF_60_CNT_SOCIAL_CIRCLE",
+        "AMT_REQ_CREDIT_BUREAU_YEAR",
+        "AGE",
+        "YEARS_EMPLOYED",
+        "YEARS_REGISTERED",
+        "YEARS_ID_PUBLISH"))
       .setOutputCol("features")
 
     // Scale the features
@@ -62,7 +62,7 @@ object LogisticRegression {
         .setWithMean(true)
 
     // Calculate the class weights
-    val classCounts = dataset.groupBy("target").count().collect()
+    val classCounts = dataset.groupBy("TARGET").count().collect()
     val total = classCounts.map(_.getLong(1)).sum.toDouble
     val classWeights = classCounts.map { row =>
         val label = row.getDouble(0)
@@ -73,13 +73,13 @@ object LogisticRegression {
     // Add the class weights to the DataFrame
     val weightedDataset = dataset.withColumn(
         "classWeight",
-        when($"target" === 0.0, classWeights(0.0))
+        when($"TARGET" === 0.0, classWeights(0.0))
             .otherwise(classWeights(1.0))
         )
 
     // Define the logistic regression model
     val lr = new LogisticRegression()
-      .setLabelCol("target")
+      .setLabelCol("TARGET")
       .setFeaturesCol("scaledFeatures")
       .setMaxIter(100)
       .setRegParam(0.3)
@@ -98,12 +98,12 @@ object LogisticRegression {
     val predictions = model.transform(testData)
 
     // Select example rows to display
-    predictions.filter($"prediction" === 0.0).select("target", "features", "probability", "prediction").show(25)
-    predictions.filter($"prediction" === 1.0).select("target", "features", "probability", "prediction").show(25)
+    predictions.filter($"prediction" === 0.0).select("TARGET", "features", "probability", "prediction").show(25)
+    predictions.filter($"prediction" === 1.0).select("TARGET", "features", "probability", "prediction").show(25)
 
     // Evaluate the model using area under ROC
     val evaluator = new BinaryClassificationEvaluator()
-      .setLabelCol("target")
+      .setLabelCol("TARGET")
       .setRawPredictionCol("rawPrediction")
       .setMetricName("areaUnderROC")
 
