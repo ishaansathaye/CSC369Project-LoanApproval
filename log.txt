@@ -1,0 +1,51 @@
+﻿* 11/15 
+   * [9 AM - 10 AM]
+      * Everyone
+         * Searched for a dataset to use
+         * Established forms of communication and set up Github
+         * Did some preprocessing of the data
+   * [4 PM - 6 PM]
+      * Anson
+         * Created the LoanApplicant case class 
+         * Finished the processData function that parses the csv
+      * Ishaan
+         * Debugged errors for spark for the LoanApplicant data parsing on server
+* 11/16
+   * [3 PM - 4 PM]
+      * Michael
+         * Created the Jupyter Notebook to do basic preprocessing
+* 11/22
+   * [10 AM - 12 PM]
+      * Anson
+         * Edited the Jupyter Notebook to handle all features
+         * Attempt to parse the csv so all features can be included in the Loan Applicant class
+* 11/23
+   * [10 AM - 12 PM]
+      * Anson
+         * Edit LoanApplicant to include a maximum of 22 features due to errors for Arrays over that size
+         * Did feature selection to choose which ones to keep
+* 11/29
+   * [9 AM - 10 AM]
+      * Everyone
+         * Decide what machine learning algorithm to implement
+         * Ishaan - Logistic Regression
+         * Michael - KNN
+         * Anson - SVC
+* 11/30
+   * [6 PM - 9 PM]
+      * Anson
+         * Wrote code for the SVC
+         * Created metric functions
+      * Ishaan
+         * Trained Logistic Regression Model on data and amended out class imbalances in data
+      * Michael
+         * Wrote KNN Classifier
+* 11/31
+   * [7 PM-10 PM]
+      * Anson
+         * Changed algorithms to Naive Bayes since SVC was performing poorly 
+         * Wrote code for Naive Bayes
+      * Ishaan
+         * Tuned hyperparameters and implemented regularization to handle features calling as well as class imbalance
+      * Michael
+         * Tuned KNN classifier to current values of K, selected feature sets, and threshold value.
